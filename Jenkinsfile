@@ -42,9 +42,15 @@ pipeline {
         stage('Add Host to known_hosts') {
             steps {
                 script {
-                    sh '''
+                    sh """
+                        # Ensure .ssh directory exists
+                        mkdir -p /var/lib/jenkins/.ssh
+                        chmod 700 /var/lib/jenkins/.ssh
+
+                        # Add the host to known_hosts
                         ssh-keyscan -H $PRODUCTION_IP_ADDRESS >> /var/lib/jenkins/.ssh/known_hosts
-                    '''
+                        chmod 600 /var/lib/jenkins/.ssh/known_hosts
+                    """                
                 }
             }
         }
