@@ -5,10 +5,6 @@ pipeline {
         nodejs "nodejs"  // Make sure "nodejs" is properly configured in Jenkins Global Tool Config
     }
 
-    environment {
-        DEPLOY_SSH_KEY = credentials('AWS_INSTANCE_SSH')  // Secure SSH credentials
-    }
-
     stages {
         stage('Install Packages') {
             steps {
