@@ -46,7 +46,7 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
+/*        stage('Deploy') {
             steps {
                 sh '''
                     ssh -v -i $DEPLOY_SSH_KEY ubuntu@$PRODUCTION_IP_ADDRESS '
@@ -69,7 +69,7 @@ pipeline {
                 '''
             }
         }
-    }
+    }    */ 
 
     post {
         always {
