@@ -2,7 +2,12 @@ pipeline {
     agent any
 
     tools {
-        nodejs "nodejs"
+        nodejs "nodejs"  // Make sure "nodejs" is properly configured in Jenkins Global Tool Config
+    }
+
+    environment {
+        DEPLOY_SSH_KEY = credentials('AWS_INSTANCE_SSH')  // Secure SSH credentials
+    }
 
     stages {
         stage('Install Packages') {
@@ -16,7 +21,6 @@ pipeline {
         stage('Run the App') {
             steps {
                 script {
-                    // Using npx to ensure pm2 runs even if not globally installed
                     sh 'npx pm2 start --interpreter babel-node src/app.js --name todos-app'
                     sleep 5
                 }
@@ -26,7 +30,6 @@ pipeline {
         stage('Test the App') {
             steps {
                 script {
-                    // Adding error handling for curl
                     sh 'curl --fail http://localhost:3000/health || exit 1'
                 }
             }
@@ -35,7 +38,6 @@ pipeline {
         stage('Stop the App') {
             steps {
                 script {
-                    // Use npx to stop pm2 app
                     sh 'npx pm2 stop todos-app || echo "App not running"'
                 }
             }
@@ -44,7 +46,6 @@ pipeline {
         stage('Add Host to known_hosts') {
             steps {
                 script {
-                    // Corrected the typo in PRODUCTION_IP_ADDRESS
                     sh '''
                         ssh-keyscan -H $PRODUCTION_IP_ADDRESS >> /var/lib/jenkins/.ssh/known_hosts
                     '''
@@ -81,12 +82,11 @@ pipeline {
                 }
             }
         }
-    }
+    }  // <-- Closing stages block
 
     post {
         always {
             script {
-                // Cleanup PM2 processes after the pipeline run
                 sh 'npx pm2 delete todos-app || echo "No PM2 process to delete"'
             }
         }
@@ -96,5 +96,5 @@ pipeline {
         success {
             echo 'Deployment successful! 🚀'
         }
-    }
-}
+    }  // <-- Closing post block
+}  // <-- Closing pipeline block
