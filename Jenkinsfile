@@ -6,7 +6,6 @@ pipeline {
     }
 
     environment {
-        DEPLOY_SSH_KEY = credentials('AWS_INSTANCE_SSH')  // SSH Key for Deployment
         PRODUCTION_IP_ADDRESS = '52.204.238.172'  // Replace with actual IP or DNS
     }
 
